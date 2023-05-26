@@ -1,7 +1,23 @@
+using ASP121.Data;
+using ASP121.Services.Hash;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+//builder.Services.AddTransient<IHashService, Md5HashService>();
+//builder.Services.AddScoped<IHashService, Md5HashService>();
+builder.Services.AddSingleton<IHashService, Md5HashService>();
+//builder.Services.AddSingleton<IHashService, Sha1HashService>();
+
+// Add Data Context
+builder.Services.AddDbContext<DataContext>(options => 
+    options.UseMySql(
+        builder.Configuration.GetConnectionString("PlanetDb"),
+        new MySqlServerVersion(new Version(8, 0, 23))
+));
 
 var app = builder.Build();
 
