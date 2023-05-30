@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using System.Security.Claims;
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -29,17 +30,38 @@
                     </ul>
                 </div>
 
-                <!-- Button trigger modal -->
-                <i class="bi-person-lock text-dark"
-                   data-bs-toggle="modal"
-                   data-bs-target="#signinModal"
-                   style="font-size:1.7rem;"
-                   role="button"
-                   title="Вхід до системи"
-                ></i>
+                @if(Context.User.Identity?.IsAuthenticated == true)
+                {
+                    String? avatar =
+                        Context.User.Claims
+                            .FirstOrDefault(c => c.Type == ClaimTypes.UserData)
+                            ?.Value;
+                    <img src="/uploads/@avatar"alt="Avatar" class="rounded-circle" style="max-width: 40px"/>
+                    @*
+                        Д.З. Додати посилання/кнопку для виходу (Sign Out)
+                        при натиснені скиидається автентифікація та відбвається перехід
+                        на домашню сторінку.
+                        У контролері створюємо медод SignOut і саме на нього робимо посилання
+                        Цей метод має прибрати з сесії дані про користувача (id), але
+                        небажано повністю стирати сесію - тільки дані автентифікації
+                        Метод має повертати результат - Redirecr на головну сторінку, це
+                        Змусить браузер перейти на неї
+                    *@
+                }
+                else
+                {
+                    <!-- Button trigger modal -->
+                    <i class="bi-person-lock text-dark"
+                       data-bs-toggle="modal"
+                       data-bs-target="#signinModal"
+                       style="font-size:1.7rem;"
+                       role="button"
+                       title="Вхід до системи"></i>
 
-                <a asp-controller="User" asp-action="SignUp"
-                    title="Реєстрація"><i class="bi-person-add text-dark mx-3" style="font-size:1.7rem;"></i></a>
+                    <a asp-controller="User" asp-action="SignUp"
+                       title="Реєстрація"><i class="bi-person-add text-dark mx-3" style="font-size:1.7rem;"></i></a>
+                }
+                
             </div>
         </nav>
     </header>
@@ -66,14 +88,12 @@
                 <div class="modal-body">
                     
                     <div class="input-group mb-3">
-                        <span class="input-group-text py-0 px-2"
-                                                           id="signin-login-addon"><i class="bi-person fs-bi"></i></span>
+                        <span class="input-group-text py-0 px-2" id="signin-login-addon"><i class="bi-person fs-bi"></i></span>
                         <input type="text" class="form-control" id="signin-login" name="signin-login" placeholder="Введіть логін" aria-describedby="signin-login-addon">
                     </div>
                     
                     <div class="input-group mb-3">
-                        <span class="input-group-text py-0 px-2"
-                                                           id="signin-password-addon"><i class="bi-lock fs-bi"></i></span>
+                        <span class="input-group-text py-0 px-2" id="signin-password-addon"><i class="bi-lock fs-bi"></i></span>
                         <input type="password" class="form-control" id="signin-password" name="signin-password" placeholder="Введіть пароль" aria-describedby="signin-password-addon">
                     </div>
                 </div>

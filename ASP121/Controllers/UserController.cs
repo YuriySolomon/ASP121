@@ -1,8 +1,10 @@
 ﻿using ASP121.Data;
 using ASP121.Models.User;
 using ASP121.Services.Hash;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
+using System.Text.RegularExpressions;
 
 namespace ASP121.Controllers
 {
@@ -36,7 +38,19 @@ namespace ASP121.Controllers
              * Json(new { status = "OK" }) або
              * Json(new { status = "NO" }) 
              */
-            return Json(new { login, password });
+            var user = _dataContext.Users121.FirstOrDefault(u => u.Login == login);
+            if (user != null)
+            {
+                if (user.PasswordHash == _hashService.HashString(password))
+                {
+                    // Автентифікація пройдена
+                    // Зберігаємо у сесії id користувача
+                    HttpContext.Session.SetString("AuthUserId", user.ID.ToString());
+                    return Json(new { status = "OK" });
+                }
+            }
+            return Json(new { status = "NO" });
+            //return Json(new { login, password });
         }
 
         // Перевіряє валідність даних у моделі, прийнятої з форми
@@ -46,8 +60,19 @@ namespace ASP121.Controllers
         {
             if (model == null) { return "Дані не передані"; }
             if (String.IsNullOrEmpty(model.Login)) { return "Логін не може бути порожнім"; }
-            if (String.IsNullOrEmpty(model.Password)) { return "Пароль не може бути порожнім"; }
+            var user = _dataContext.Users121.FirstOrDefault(u => u.Login == model.Login);
+            if (user != null) { return "Такий логін вже існує"; }
+
+                if (String.IsNullOrEmpty(model.Password) || String.IsNullOrEmpty(model.RepeatPassword)) { return "Пароль не може бути порожнім"; }
+            if (model.Password != model.RepeatPassword) { return "Паролі не співпадають"; }
+
             if (String.IsNullOrEmpty(model.Email)) { return "Email не може бути порожнім"; }
+            string email = model.Email;
+            if ( ! IsValidEmail(email))
+            {
+                return "Email не є коректним.";
+            }
+
             if (! model.Agree) { return "необхідно дотримуватися павил сайту"; }
 
             // завантажуємо аватарку
@@ -58,6 +83,10 @@ namespace ASP121.Controllers
                 // визначаємо тип (розширення) файлу
                 String ext = Path.GetExtension(model.AvatarFile.FileName);
                 // Д.З. перевірити тип файлу на допустимий перелік
+                if ( ! IsAllowedFileType(ext))
+                {
+                    return "Тип файлу не є допустимим.";
+                }
 
                 // змінюємо ім'я файлу - це запобігає випадковому перезапису
                 newName = Guid.NewGuid().ToString() + ext;
@@ -81,6 +110,22 @@ namespace ASP121.Controllers
             // зберігаємо внесені зміни
             _dataContext.SaveChanges(); // PlanetScale не підтримує асинхронні запити
             return String.Empty;
+        }
+
+        static bool IsAllowedFileType(string fileExtension)
+        {
+            // Описуйте допустимі типи файлів у вашому переліку
+            string[] allowedExtensions = { ".jpg", ".png", ".gif" };
+
+            return Array.Exists(allowedExtensions, ext => ext.Equals(fileExtension, StringComparison.OrdinalIgnoreCase));
+        }
+
+        static bool IsValidEmail(string email)
+        {
+            // Регулярний вираз для перевірки формату Email
+            string pattern = @"^[\w\.-]+@([\w-]+\.)+[\w-]{2,4}$";
+
+            return Regex.IsMatch(email, pattern);
         }
 
     }

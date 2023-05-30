@@ -86,6 +86,54 @@ namespace ASP121.Controllers
             return View();
         }
 
+        public ViewResult Sessions(String? userstring)
+        {
+            if (userstring != null) // є дані від форми
+            {
+                HttpContext.Session.SetString("StoredString", userstring);
+            }
+
+            if (HttpContext.Session.Keys.Contains("StoredString"))
+            {
+                ViewData["StoredString"] = HttpContext.Session.GetString("StoredString");
+            }
+            else
+            {
+                ViewData["StoredString"] = "У сесії немає збережених даних";
+            }
+
+            if (HttpContext.Session.Keys.Contains("Form2String"))
+            {
+                ViewData["Form2String"] = HttpContext.Session.GetString("Form2String");
+            }
+            else
+            {
+                ViewData["Form2String"] = "У сесії немає збережених даних";
+            }
+
+            return View();
+        }
+
+        public RedirectToActionResult SessionsForm(String? userstring)
+        {
+            // цей метод приймає дані для другої форми і надсилає Redirect
+            // Але для того щоб дані "userstring" були доступні після перезапиту,
+            // їх потрібно зберегти у сесії
+            HttpContext.Session.SetString("Form2String", userstring!);
+            return RedirectToAction("Sessions");
+            /* Sessions       userstring
+             *  Form1 ----------------------> Sessions -> HTML (/session?userstring=123)
+             *  
+             *  
+             *                userstring
+             * Form2 ----------------------> SessionsForm -> 302 (Redirect)
+             *         redirect to Sessions
+             *       <----------------------      Сесія зберігає дані між запитами
+             * Browser     -(немає даних)-
+             *       ----------------------> Sessions -> HTML (/session)
+             */
+        }
+
         public IActionResult Privacy()
         {
             return View();

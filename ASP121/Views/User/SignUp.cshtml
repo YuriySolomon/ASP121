@@ -12,7 +12,7 @@
 {
     if (ViewData["form"]?.ToString() == String.Empty)
     {
-        <div class="alert alert-success" role="alert">перевірка пройдена</div>
+        <div class="alert alert-success" role="alert">Користувач доданий в БД</div>
     }
     else
     {
@@ -31,53 +31,49 @@
                 <span class="input-group-text"  
                                            id="user-login-addon"><i class="bi-person" style="font-size:1.1rem"></i></span>
                 <input type="text" class="form-control"  
-                                             id="user-login" name="user-login"
-                                             placeholder="Виберіть логін"
-                                             value="@(needSaveValues ? Model.Login : "")"
-                                             aria-describedby="user-login-addon">
+                                   id="user-login" name="user-login"
+                                   placeholder="Виберіть логін"
+                                   value="@(needSaveValues ? Model.Login : "")"
+                                   aria-describedby="user-login-addon">
             </div>
-
-
 
             <label for="user-password" class="form-label">Пароль</label>
             <div class="input-group mb-3">
                 <span class="input-group-text"
                       id="user-password-addon"><i class="bi-lock" style="font-size:1.1rem"></i></span>
                 <input type="password" class="form-control"
-                                             id="user-password" name="user-password"
-                                             placeholder="Виберіть пароль"
-                                             aria-describedby="user-password-addon">
+                                       id="user-password" name="user-password"
+                                       placeholder="Виберіть пароль"
+                                       aria-describedby="user-password-addon">
             </div>
 
             <label for="user-repeat" class="form-label">Підтвердіть пароль</label>
             <div class="input-group mb-3">
-                <span class="input-group-text"
-                                           id="user-repeat-addon"><i class="bi-unlock" style="font-size:1.1rem"></i></span>
+                <span class="input-group-text" id="user-repeat-addon"><i class="bi-unlock" style="font-size:1.1rem"></i></span>
                 <input type="password" class="form-control"
-                                             id="user-repeat" name="user-repeat"
-                                             placeholder="Повторіть пароль"
-                                             aria-describedby="user-repeat-addon">
+                                       id="user-repeat" name="user-repeat"
+                                       placeholder="Повторіть пароль"
+                                       aria-describedby="user-repeat-addon">
             </div>
 
             <label for="user-name" class="form-label">Реальне ім'я (не ообв'язково)</label>
             <div class="input-group mb-3">
-                <span class="input-group-text"  
-                                           id="user-name-addon"><i class="bi-person" style="font-size:1.1rem"></i></span>
-                <input type="text" class="form-control"  
-                                             id="user-name" name="user-name"
-                                             placeholder="Ім'я використовуєтся для листування з вами'"
-                       value="@(needSaveValues ? Model.RealName : "")"
-                                             aria-describedby="user-name-addon">
+                <span class="input-group-text" id="user-name-addon"><i class="bi-person" style="font-size:1.1rem"></i></span>
+                <input type="text" class="form-control" 
+                                   id="user-name" name="user-name"
+                                   placeholder="Ім'я використовуєтся для листування з вами'"
+                                   value="@(needSaveValues ? Model.RealName : "")"
+                                   aria-describedby="user-name-addon">
             </div>
 
             <label for="user-email" class="form-label">Email</label>
             <div class="input-group mb-0">
                 <span class="input-group-text" id="user-email-addon"><i class="bi-envelope-at" style="font-size:1.1rem"></i></span>
                 <input type="email" class="form-control"  
-                                             id="user-email" name="user-email"
-                                             placeholder="Ваша електронна пошта"
-                       value="@(needSaveValues ? Model.Email : "")"
-                                             aria-describedby="user-email-addon">
+                                    id="user-email" name="user-email"
+                                    placeholder="Ваша електронна пошта"
+                                    value="@(needSaveValues ? Model.Email : "")"
+                                    aria-describedby="user-email-addon">
             </div>
             <div id="emailHelp" class="form-text mb-3">Без вашої згоди ці відомості поширені не будуть.</div>
 
@@ -85,8 +81,9 @@
             <div class="input-group mb-3">
                 <span class="input-group-text" id="user-avatar-addon"><i class="bi-person-circle" style="font-size:1.1rem"></i></span>
                 <input type="file" class="form-control"  
-                                             id="user-avatar" name="user-avatar"
-                                             aria-describedby="user-avatar-addon" style="font-size:1.1rem">
+                                   id="user-avatar" name="user-avatar"
+                                   aria-describedby="user-avatar-addon"
+                                   style="font-size:1.1rem">
             </div>
 
             <div class="mb-3 form-check">
