@@ -37,12 +37,17 @@ function signInButtonClick() {
         .then(j => {                         // Відповідь одержується у два етапи - 
             console.log(j);                  // 1.then r => r.json() / r.tetx()
                                              // 2.then - робота з json або text
-            if (typeof j.status != 'undefined') {
-                if (j.status == 'OK') {
+            if (typeof j.status != 'undefined')
+            {
+                if (j.status == 'OK')
+                {
                     window.location.reload();   // оновлюємо сторінку як для автентифікованого користовуча
                 }
-                else {
-                    // поміщаємо алерти
+                else
+                {
+                    alert("Неправільний логін або пароль");
+                    userLoginInput.value = "";
+                    userPasswordInput.value = "";
                 }
             }
 

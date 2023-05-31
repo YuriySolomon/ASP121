@@ -48,7 +48,7 @@ namespace ASP121.Controllers
                     HttpContext.Session.SetString("AuthUserId", user.ID.ToString());
                     return Json(new { status = "OK" });
                 }
-            }
+            }            
             return Json(new { status = "NO" });
             //return Json(new { login, password });
         }
