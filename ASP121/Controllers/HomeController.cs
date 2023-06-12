@@ -45,6 +45,10 @@ namespace ASP121.Controllers
             };
             return View(model);
         }
+        public ViewResult API()
+        {
+            return View();
+        }
         public IActionResult Product()
         {           
             var prod = new List<Product>

@@ -29,6 +29,17 @@ namespace ASP121.Controllers
             return View(model);
         }
 
+        #region Logout session
+        public ActionResult LogOut()
+        {
+            // Видаляємо дані автентифікації з сесії
+            HttpContext.Session.Remove("AuthUserId");
+
+            // Повертаємо результат Redirect на головну сторінку
+            return RedirectToAction("Index", "Home");
+        }
+        #endregion
+
         [HttpPost]
         public JsonResult LogIn([FromForm] String login, [FromForm] String password)
         {
@@ -38,7 +49,7 @@ namespace ASP121.Controllers
              * Json(new { status = "OK" }) або
              * Json(new { status = "NO" }) 
              */
-            var user = _dataContext.Users121.FirstOrDefault(u => u.Login == login);
+            var user = _dataContext.Users.FirstOrDefault(u => u.Login == login);
             if (user != null)
             {
                 if (user.PasswordHash == _hashService.HashString(password))
@@ -60,7 +71,7 @@ namespace ASP121.Controllers
         {
             if (model == null) { return "Дані не передані"; }
             if (String.IsNullOrEmpty(model.Login)) { return "Логін не може бути порожнім"; }
-            var user = _dataContext.Users121.FirstOrDefault(u => u.Login == model.Login);
+            var user = _dataContext.Users.FirstOrDefault(u => u.Login == model.Login);
             if (user != null) { return "Такий логін вже існує"; }
 
                 if (String.IsNullOrEmpty(model.Password) || String.IsNullOrEmpty(model.RepeatPassword)) { return "Пароль не може бути порожнім"; }
@@ -96,7 +107,7 @@ namespace ASP121.Controllers
             }
 
             // додаємо користувача до БД
-            _dataContext.Users121.Add(new Data.Entity.User
+            _dataContext.Users.Add(new Data.Entity.User
             {
                 ID = Guid.NewGuid(),
                 Login = model.Login,

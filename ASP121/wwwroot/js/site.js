@@ -5,6 +5,10 @@
 document.addEventListener("DOMContentLoaded", () => {
     const signInButton = document.getElementById("signin-button");
     if (signInButton) signInButton.addEventListener('click', signInButtonClick);
+
+    for (let element of document.querySelectorAll("[data-rate-value]")) {
+        element.addEventListener('click', rateClick);
+    }
 });
 
 function signInButtonClick() {
@@ -36,15 +40,12 @@ function signInButtonClick() {
         .then(r => r.json())                 // спеціальний об'єкт-конструктор форм FormData
         .then(j => {                         // Відповідь одержується у два етапи - 
             console.log(j);                  // 1.then r => r.json() / r.tetx()
-                                             // 2.then - робота з json або text
-            if (typeof j.status != 'undefined')
-            {
-                if (j.status == 'OK')
-                {
+            // 2.then - робота з json або text
+            if (typeof j.status != 'undefined') {
+                if (j.status == 'OK') {
                     window.location.reload();   // оновлюємо сторінку як для автентифікованого користовуча
                 }
-                else
-                {
+                else {
                     alert("Неправільний логін або пароль");
                     userLoginInput.value = "";
                     userPasswordInput.value = "";
@@ -59,5 +60,36 @@ function signInButtonClick() {
              * про успішність або помилковість автентифікації (входу до системи)
              * Можна у вигляді alert або у вільному місці модального вікна
              */
-        });                                  
+        });
+}
+
+function rateClick(e) { // like / dislike
+    // user-id:
+    const div = e.target.closest('div');
+    const userId = div.getAttribute('data-user-id');
+    if (typeof userId == 'undefined' || userId.length == 0) {
+        alert("Для оцінювання слід автентифікуватись");
+        return;
+    }
+    const productId = div.getAttribute('data-product-id');
+    const rate = e.target.getAttribute('data-rate-value');
+
+    console.log(userId, productId, rate);
+
+    window
+        .fetch("/api/rate", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                productId,               
+                userId,
+                'rating': rate
+            })
+        })
+        .then(r => r.json())
+        .then(j => {
+            console.log(j);
+        });
 }
