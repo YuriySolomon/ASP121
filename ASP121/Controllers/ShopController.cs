@@ -61,12 +61,19 @@ namespace ASP121.Controllers
                 // можлива помилка декодування через локалізацію (1.5/1,5)
                 model.Price = Convert.ToSingle(Request.Form["productPrice"].First()?.Replace(',','.'), CultureInfo.InvariantCulture);
             }
+            if (model.Price <= 0)
+            {
+                return "Товар не може коштувати 0 та менше грн.";
+            }
             String? newName = null;
             if (model.Image != null)  // є файл
             {
                 // визначаємо тип (розширення) файлу
                 String ext = Path.GetExtension(model.Image.FileName);
-                // Д.З. перевірити тип файлу на допустимий перелік
+                if ( ! IsAllowedFileType(ext))
+                {
+                    return "Тип файлу не є допустимим.";
+                }
                 
                 // змінюємо ім'я файлу - це запобігає випадковому перезапису
                 newName = Guid.NewGuid().ToString() + ext;
@@ -90,6 +97,13 @@ namespace ASP121.Controllers
             // зберігаємо внесені зміни
             _dataContext.SaveChanges(); // PlanetScale не підтримує асинхронні запити
             return String.Empty;
+        }
+        static bool IsAllowedFileType(string fileExtension)
+        {
+            // Описуйте допустимі типи файлів у вашому переліку
+            string[] allowedExtensions = { ".jpg", ".png", ".gif" };
+
+            return Array.Exists(allowedExtensions, ext => ext.Equals(fileExtension, StringComparison.OrdinalIgnoreCase));
         }
     }
 }
