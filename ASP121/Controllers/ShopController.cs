@@ -4,6 +4,7 @@ using ASP121.Models.User;
 using ASP121.Services.Hash;
 using ASP121.Views.Shop;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Data;
 using System.Globalization;
 
@@ -23,6 +24,7 @@ namespace ASP121.Controllers
                 ProductGroups = _dataContext.ProductGroups
                     .Where(g => g.DeleteDt == null).ToList(),
                 Products = _dataContext.Products
+                    .Include(p => p.Rates)  // заповнює навігаційну вдастивість (включає до запиту SQL)
                     .Where(p => p.DeleteDt == null).ToList()
 
             };

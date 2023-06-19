@@ -2,6 +2,7 @@
 using ASP121.Models.Rate;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Data;
 
 namespace ASP121.Controllers
@@ -39,7 +40,18 @@ namespace ASP121.Controllers
                     Moment = DateTime.Now,
                 });
                 _dataContext.SaveChanges();
-                return new { Status = true, Message = "ОК" };
+                // оновлюємо дані про рейтинг даного товару
+                var product = _dataContext.Products
+                    .Include(p => p.Rates)
+                    .Where(p => p.ID == model.ProductID)
+                    .First();
+                // включаємо оновлені дані у відповідь (для відображеня)
+                return new {
+                    Status = true,
+                    Message = "ОК",
+                    Positive = product.Rates.Count(r => r.Rating > 0),
+					Negative = product.Rates.Count(r => r.Rating < 0)
+				};
 			}
 
             // return model;
